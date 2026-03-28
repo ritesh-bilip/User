@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Neon Hub</title>
+  <style>
+    /* Your existing CSS + NEW ROOM SECTION */
+    .room-section {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s ease;
+    }
+
+    .room-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+    }
+
+    .room-input-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+
+    .room-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 1rem 1.5rem;
+      color: white;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .room-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .room-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .room-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    .room-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .room-item:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: translateX(10px);
+      border-color: #6366f1;
+    }
+
+    .room-name {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .room-join-btn {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .room-join-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Your existing button styles remain */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>✨ Dashboard</h1>
+    <div id="profile">Loading your profile...</div>
+    <h2 id="username">Welcome back!</h2>
+
+    <!-- ✅ NEW ROOM SELECTION SECTION -->
+    <div class="room-section">
+      <h3>🎮 Join/Create Room</h3>
+      <div class="room-input-group">
+        <input type="text" id="roomInput" class="room-input" placeholder="Enter room name (e.g., gaming, coding, chill)"
+          maxlength="50">
+        <button onclick="joinCustomRoom()" class="room-join-btn">🚀 Join</button>
+      </div>
+
+      <div class="room-list" id="popularRooms">
+        <h4>Popular Rooms:</h4>
+        <div class="room-item" onclick="joinRoom('general')">
+          <span class="room-name">🌐 General</span>
+          <span class="room-join-btn">Join</span>
+        </div>
+        <div class="room-item" onclick="joinRoom('gaming')">
+          <span class="room-name">🎮 Gaming</span>
+          <span class="room-join-btn">Join</span>
+        </div>
+        <div class="room-item" onclick="joinRoom('coding')">
+          <span class="room-name">💻 Coding</span>
+          <span class="room-join-btn">Join</span>
+        </div>
+        <div class="room-item" onclick="joinRoom('music')">
+          <span class="room-name">🎵 Music Lounge</span>
+          <span class="room-join-btn">Join</span>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="goToChat()">🎮 Quick Chat (General)</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <script>
+    async function getValidToken() {
+      let token = localStorage.getItem("access");
+
+      // Check if token expired
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 < Date.now()) {
+          const refresh = localStorage.getItem("refresh");
+          const response = await fetch("/auth/refresh/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh })
+          });
+          const data = await response.json();
+          token = data.access;
+          localStorage.setItem("access", token);
+        }
+      } catch (e) {
+        console.log("Token refresh failed, redirecting to login");
+        window.location.href = "/auth/";
+        return null;
+      }
+      return token;
+    }
+
+    // ✅ NEW: Join custom room
+    async function joinCustomRoom() {
+      const roomName = document.getElementById('roomInput').value.trim();
+      if (!roomName) {
+        alert('Please enter a room name!');
+        return;
+      }
+
+      const token = await getValidToken();
+      if (token) {
+        window.location.href = `http://127.0.0.1:8001/${roomName}/?token=${token}`;
+      }
+    }
+
+    // ✅ NEW: Join predefined room
+    async function joinRoom(roomName) {
+      const token = await getValidToken();
+      if (token) {
+        window.location.href = `http://127.0.0.1:8001/${roomName}/?token=${token}`;
+      }
+    }
+
+    // ✅ Updated: Quick chat (general room)
+    async function goToChat() {
+      await joinRoom('general');
+    }
+
+    async function loadProfile() {
+      const token = localStorage.getItem("access");
+      if (!token) {
+        alert("Session expired. Redirecting to login...");
+        window.location.href = "/auth/";
+        return;
+      }
+
+      try {
+        const response = await fetch("/auth/profile/", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          document.getElementById("profile").innerHTML = `
+            ${data.avatar ? `<img src="${data.avatar}" alt="Avatar">` : '<div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#ec4899);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div>'}
+            <p><strong>🌟 Bio:</strong> ${data.bio || "Dreamer & Creator"}</p>
+            <p><strong>📅 Joined:</strong> ${new Date(data.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          `;
+          document.getElementById("username").textContent = `Welcome, ${data.username || 'User'}!`;
+        } else {
+          throw new Error('Invalid token');
+        }
+      } catch (error) {
+        alert("Session expired. Please login again.");
+        window.location.href = "/auth/";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      alert("Logged out safely! 👋");
+      window.location.href = "/auth/";
+    }
+
+    // Enter key support for room input
+    document.getElementById('roomInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        joinCustomRoom();
+      }
+    });
+
+    window.addEventListener('load', loadProfile);
+  </script>
+</body>
+
+</html>

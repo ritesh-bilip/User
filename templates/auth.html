@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth - Neon Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a0033 50%, #2d1b69 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+      }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 25px 45px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      position: relative;
+      z-index: 1;
+      animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h2 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+      letter-spacing: 2px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    input:focus {
+      border-color: #ec4899;
+      box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
+      transform: translateY(-2px);
+    }
+
+    button {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+      border: none;
+      border-radius: 15px;
+      padding: 1rem 2rem;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.6);
+    }
+
+    button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    #otpSection {
+      display: none;
+      animation: fadeIn 0.5s ease;
+      margin-top: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #otpSection h3 {
+      color: #ec4899;
+      text-align: center;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 1rem;
+        padding: 2rem 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 50%;
+      animation: float 6s infinite linear;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="container">
+    <h2>🌌 Neon Portal</h2>
+
+    <!-- Step 1: Signup/Login Form -->
+    <form id="authForm">
+      <input type="text" name="username" placeholder="👤 Username" required>
+      <input type="email" name="email" placeholder="✉️ Email (blank for login)">
+      <input type="password" name="password" placeholder="🔒 Password" required>
+      <button type="submit">🚀 Submit</button>
+    </form>
+
+    <!-- Step 2: OTP Verification -->
+    <div id="otpSection">
+      <h3>🔑 Verify OTP</h3>
+      <form id="otpForm">
+        <input type="text" name="otp" placeholder="Enter 6-digit code" required maxlength="6">
+        <button type="submit">✅ Verify & Enter</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Existing JS unchanged
+    let currentUsername = "";
+    document.getElementById("authForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(this));
+      const endpoint = formData.email ? "/auth/signup/" : "/auth/login/";
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await response.json();
+      alert(data.message || data.error);
+      if (response.ok) {
+        currentUsername = formData.username;
+        document.getElementById("otpSection").style.display = "block";
+      }
+    });
+    document.getElementById("otpForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const otpValue = this.otp.value;
+      const response = await fetch("/auth/verify-otp/", {
+        method: "POST",
+        body: JSON.stringify({ username: currentUsername, otp: otpValue }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("refresh", data.refresh);
+        alert("OTP verified! Welcome to dashboard 🚀");
+        window.location.href = "/auth/dashboard/";
+      } else {
+        alert(data.error);
+      }
+    });
+
+    // Floating particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = particle.style.height = (Math.random() * 4 + 1) + 'px';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particles.appendChild(particle);
+      }
+    }
+    createParticles();
+  </script>
+</body>
+
+</html>
