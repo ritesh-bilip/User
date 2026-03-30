@@ -20,7 +20,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django_cors_headers',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,11 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'account',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -110,16 +108,7 @@ REST_FRAMEWORK={
   )
 }
 SIMPLE_JWT = {}
-# DATABASES={
-#   'default':{
-#     'ENGINE': 'django.db.backends.postgresql',
-#     'NAME':'user_service',
-#     'USER':'postgres',
-#     'PASSWORD':'RITESH@2004',
-#     'HOST': 'localhost',
-#     'PORT':'5432',
-#   }
-# }
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST= os.environ.get('EMAIL_HOST')
 EMAIL_PORT=int(os.environ.get('EMAIL_PORT',587))
@@ -136,7 +125,4 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "https://dasri-chat-service.onrender.com",
-    "http://localhost:8001",
-]
+
