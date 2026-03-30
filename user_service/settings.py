@@ -20,6 +20,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_cors_headers',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,10 +135,8 @@ SIMPLE_JWT["SIGNING_KEY"] = JWT_SECRET
 DATABASES = {
     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
+
 CORS_ALLOWED_ORIGINS = [
-    "https://dasri-chat-service.onrender.com",  # Your chat service
+    "https://dasri-chat-service.onrender.com",
     "http://localhost:8001",
-    "https://dasri-auth-service.onrender.com"
 ]
-
-
