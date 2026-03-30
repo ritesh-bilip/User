@@ -1,3 +1,4 @@
+import os
 import random
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
@@ -27,14 +28,16 @@ class SignupView(APIView):
 
         code = str(random.randint(100000, 999999))
         OTP.objects.create(user=user, code=code)
-
-        send_mail(
-            'Your SignUp OTP',
-            f'Your OTP is {code}',
-            'noreply@yourapp.com',   # ✅ sender email
-            [user.email],            # ✅ recipient list
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                'Your SignUp OTP',
+                f'Your OTP is {code}',
+                os.environ.get('EMAIL_HOST_USER'),
+                [user.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            return Response({"error": f"Email failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)                    
         return Response({"message": "Signup successful. OTP sent to email."}, status=status.HTTP_201_CREATED)
 
 
