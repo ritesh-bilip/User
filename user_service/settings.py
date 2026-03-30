@@ -129,3 +129,7 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+# Auto-run migrations on startup
+if os.environ.get('RUN_MIGRATIONS'):
+    from django.core.management import call_command
+    call_command('migrate', verbosity=0)
