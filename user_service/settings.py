@@ -121,8 +121,16 @@ JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e7
 
 SIMPLE_JWT["SIGNING_KEY"] = JWT_SECRET
 
+
+
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'OPTIONS': {
+            'options': '-c search_path=public'
+        }
+    }
 }
 
-
+# Let dj_database_url handle the connection string
+DATABASES['default'].update(dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600))
