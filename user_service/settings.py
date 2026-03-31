@@ -109,13 +109,20 @@ REST_FRAMEWORK={
 }
 SIMPLE_JWT = {}
 
+# Email - PRODUCTION READY
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST= os.environ.get('EMAIL_HOST')
-EMAIL_PORT=int(os.environ.get('EMAIL_PORT',587))
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@dasri.in')
+EMAIL_TIMEOUT = 30  # Add this!
+
+# Render production
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = False
+ALLOWED_HOSTS = ['dasri-auth-service.onrender.com', '.onrender.com']
 # 
 # JWT_SECRET = "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5"
 JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5")

@@ -12,6 +12,8 @@ from .models import OTP, Profile
 from .serializer import UserSerializer, ProfileSerializer
 
 
+
+
 class SignupView(APIView):
     def post(self, request):
         username = request.data.get("username")
