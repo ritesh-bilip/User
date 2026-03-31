@@ -232,60 +232,9 @@
   </div>
 
   <script>
-    // Existing JS unchanged
     let currentUsername = "";
-    document.getElementById("authForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const formData = Object.fromEntries(new FormData(this));
-      const endpoint = formData.email ? "/auth/signup/" : "/auth/login/";
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" }
-      });
-      const data = await response.json();
-      alert(data.message || data.error);
-      if (response.ok) {
-        currentUsername = formData.username;
-        document.getElementById("otpSection").style.display = "block";
-      }
-    });
-    document.getElementById("otpForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const otpValue = this.otp.value;
-      const response = await fetch("/auth/verify-otp/", {
-        method: "POST",
-        body: JSON.stringify({ username: currentUsername, otp: otpValue }),
-        headers: { "Content-Type": "application/json" }
-      });
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("access", data.access);
-        localStorage.setItem("refresh", data.refresh);
-        alert("OTP verified! Welcome to dashboard 🚀");
-        window.location.href = "/auth/dashboard/";
-      } else {
-        alert(data.error);
-      }
-    });
 
-    // Floating particles
-    function createParticles() {
-      const particles = document.getElementById('particles');
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.width = particle.style.height = (Math.random() * 4 + 1) + 'px';
-        particle.style.animationDelay = Math.random() * 6 + 's';
-        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-        particles.appendChild(particle);
-      }
-    }
-    createParticles();
-
-
+    // CSRF Token Helper
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -301,15 +250,96 @@
       return cookieValue;
     }
 
-    // Update BOTH fetch calls to include the CSRF token:
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")   // ← ADD THIS
+    // AUTH FORM - FIXED WITH CSRF + ERROR HANDLING
+    document.getElementById("authForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+      const endpoint = formData.email ? "/auth/signup/" : "/auth/login/";
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+          }
+        });
+
+        // Handle HTML errors (500s)
+        const contentType = response.headers.get("content-type");
+        let data;
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          data = { error: `Server error ${response.status}: ${response.statusText}` };
+        }
+
+        if (response.ok) {
+          currentUsername = formData.username;
+          document.getElementById("otpSection").style.display = "block";
+          document.getElementById("authForm").style.display = "none";
+        } else {
+          alert(data.message || data.error || "Unknown error");
+        }
+      } catch (error) {
+        alert("Network error: " + error.message);
       }
     });
+
+    // OTP FORM - FIXED WITH CSRF
+    document.getElementById("otpForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const otpValue = e.target.otp.value;
+
+      try {
+        const response = await fetch("/auth/verify-otp/", {
+          method: "POST",
+          body: JSON.stringify({ username: currentUsername, otp: otpValue }),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+          }
+        });
+
+        const contentType = response.headers.get("content-type");
+        let data;
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          data = { error: `Server error ${response.status}` };
+        }
+
+        if (response.ok) {
+          localStorage.setItem("access", data.access);
+          localStorage.setItem("refresh", data.refresh);
+          alert("✅ Welcome to Neon Portal! 🚀");
+          window.location.href = "/auth/dashboard/";
+        } else {
+          alert(data.error || "Invalid OTP");
+          e.target.otp.value = "";
+          e.target.otp.focus();
+        }
+      } catch (error) {
+        alert("Network error: " + error.message);
+      }
+    });
+
+    // Particles animation (unchanged)
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = particle.style.height = (Math.random() * 4 + 1) + 'px';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particles.appendChild(particle);
+      }
+    }
+    createParticles();
   </script>
 </body>
 
