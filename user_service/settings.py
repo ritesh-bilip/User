@@ -115,6 +115,7 @@ EMAIL_PORT=int(os.environ.get('EMAIL_PORT',587))
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
+
 # 
 # JWT_SECRET = "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5"
 JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5")
@@ -122,14 +123,6 @@ JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e7
 SIMPLE_JWT["SIGNING_KEY"] = JWT_SECRET
 
 
-# DATABASES = {
-#     'default': dj_database_url.parse(
-#         os.environ.get('DATABASE_URL'),
-#         conn_max_age=600,
-#         conn_health_checks=True,
-#     )
-# }
-# Auto-run migrations on startup
 
 
 DATABASES = {

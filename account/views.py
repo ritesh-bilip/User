@@ -22,11 +22,11 @@ class SignupView(APIView):
             return Response({"error": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(email=email).exists():
             return Response({"error": "Email already registered"}, status=status.HTTP_400_BAD_REQUEST)
-
+        code = str(random.randint(100000, 999999))
         user = User.objects.create_user(username=username, email=email, password=password)
         Profile.objects.create(user=user)
 
-        code = str(random.randint(100000, 999999))
+        
         OTP.objects.create(user=user, code=code)
         try:
             send_mail(
