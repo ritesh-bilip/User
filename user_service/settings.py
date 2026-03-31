@@ -122,11 +122,23 @@ JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e7
 SIMPLE_JWT["SIGNING_KEY"] = JWT_SECRET
 
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.parse(
+#         os.environ.get('DATABASE_URL'),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
 # Auto-run migrations on startup
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dasri_auth_fresh',     # from Render
+        'USER': 'dasri_auth_fresh_user',        # from Render
+        'PASSWORD': 'zwc2t5yXc1v43kVZKqLv2i8NNEfS8HlB',# from Render
+        'HOST': 'dpg-d75dg42dbo4c739tf7og-a.oregon-postgres.render.com',        # e.g. dpg-xxxxxx.render.com
+        'PORT': '5432',
+    }
+}
