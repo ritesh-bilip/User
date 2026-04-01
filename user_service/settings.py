@@ -83,13 +83,27 @@ REST_FRAMEWORK = {
 # ✅ FIXED JWT
 JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5")
 SIMPLE_JWT = {"SIGNING_KEY": JWT_SECRET}
+# At the bottom of settings.py — replace your email block with this:
 
-# ✅ FIXED: PRODUCTION EMAIL CONFIG
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-EMAIL_TIMEOUT = 60
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'riteshkrdas479@gmail.com')
+EMAIL_TIMEOUT = 60  # ← fixed: was missing newline before this
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}

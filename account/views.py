@@ -1,6 +1,7 @@
 import os
 import random
 import threading
+import logging
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -12,10 +13,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import OTP, Profile
 from .serializer import UserSerializer, ProfileSerializer
 
+logger = logging.getLogger(__name__)
+
 def send_otp_email_async(subject, message, recipient):
-    """Non-blocking email"""
-    msg = EmailMessage(subject, message, None, [recipient])
-    msg.send(fail_silently=True)
+    """Non-blocking email with error logging"""
+    try:
+        from django.conf import settings
+        from_email = settings.DEFAULT_FROM_EMAIL  # explicitly use verified sender
+        msg = EmailMessage(subject, message, from_email, [recipient])
+        msg.send(fail_silently=False)  # ← CHANGED: don't silence errors
+        logger.info(f"OTP email sent successfully to {recipient}")
+    except Exception as e:
+        logger.error(f"Failed to send OTP email to {recipient}: {str(e)}")
+
 
 class SignupView(APIView):
     def post(self, request):
@@ -27,19 +37,19 @@ class SignupView(APIView):
             return Response({"error": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(email=email).exists():
             return Response({"error": "Email already registered"}, status=status.HTTP_400_BAD_REQUEST)
-            
+
         code = str(random.randint(100000, 999999))
         user = User.objects.create_user(username=username, email=email, password=password)
         Profile.objects.create(user=user)
         OTP.objects.create(user=user, code=code)
-        
-        # ✅ ASYNC EMAIL - NO TIMEOUTS!
+
         threading.Thread(
             target=send_otp_email_async,
             args=('Your OTP', f'Your OTP is {code}', user.email)
         ).start()
-        
+
         return Response({"message": "Signup successful. OTP sent to email."}, status=status.HTTP_201_CREATED)
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -50,18 +60,17 @@ class LoginView(APIView):
         if user is not None:
             code = str(random.randint(100000, 999999))
             OTP.objects.create(user=user, code=code)
-            
-            # ✅ ASYNC EMAIL - NO TIMEOUTS!
+
             threading.Thread(
                 target=send_otp_email_async,
                 args=('Your Login OTP', f'Your OTP is {code}', user.email)
             ).start()
-            
+
             return Response({"message": "OTP sent to your email"}, status=status.HTTP_200_OK)
 
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-# Rest of your views unchanged...
+
 class VerifyOTPView(APIView):
     def post(self, request):
         username = request.data.get("username")
@@ -83,6 +92,7 @@ class VerifyOTPView(APIView):
 
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProfileView(APIView):
     def get(self, request):
         profile = Profile.objects.get(user=request.user)
@@ -97,7 +107,7 @@ class ProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Template views unchanged
+
 def landing_page(request): return render(request, 'landing.html')
 def auth_page(request): return render(request, 'auth.html')
 def dashboard_page(request): return render(request, 'dashboard.html')

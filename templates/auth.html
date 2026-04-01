@@ -6,11 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auth - Neon Portal</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,168 +22,18 @@
     body::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background:
         radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
-      animation: float 20s ease-in-out infinite;
+      animation: floatBg 20s ease-in-out infinite;
       z-index: 0;
     }
 
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(-20px) rotate(180deg);
-      }
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 30px;
-      padding: 3rem 2.5rem;
-      width: 100%;
-      max-width: 420px;
-      box-shadow:
-        0 25px 45px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      position: relative;
-      z-index: 1;
-      animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(50px) scale(0.9);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 2rem;
-      text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
-      letter-spacing: 2px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    input {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 1rem 1.5rem;
-      color: #fff;
-      font-size: 1rem;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      outline: none;
-    }
-
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    input:focus {
-      border-color: #ec4899;
-      box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
-      transform: translateY(-2px);
-    }
-
-    button {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-      border: none;
-      border-radius: 15px;
-      padding: 1rem 2rem;
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-      position: relative;
-      overflow: hidden;
-    }
-
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    button:hover::before {
-      left: 100%;
-    }
-
-    button:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.6);
-    }
-
-    button:active {
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    #otpSection {
-      display: none;
-      animation: fadeIn 0.5s ease;
-      margin-top: 1rem;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    #otpSection h3 {
-      color: #ec4899;
-      text-align: center;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        margin: 1rem;
-        padding: 2rem 1.5rem;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-      }
+    @keyframes floatBg {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
     }
 
     .particles {
@@ -203,99 +49,441 @@
       position: absolute;
       background: rgba(99, 102, 241, 0.5);
       border-radius: 50%;
-      animation: float 6s infinite linear;
+      animation: floatParticle 6s infinite linear;
+    }
+
+    @keyframes floatParticle {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(-30px); opacity: 1; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+      position: relative;
+      z-index: 1;
+      animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(50px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    h2 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+      letter-spacing: 2px;
+    }
+
+    .mode-indicator {
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 0.65rem 1rem;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 5px 20px rgba(99,102,241,0.4);
+      transform: none;
+    }
+
+    .tab-btn:hover:not(.active) {
+      border-color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      transform: none;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    input {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 15px;
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      outline: none;
+      width: 100%;
+    }
+
+    input::placeholder { color: rgba(255,255,255,0.45); }
+
+    input:focus {
+      border-color: #ec4899;
+      box-shadow: 0 0 25px rgba(236,72,153,0.35);
+      background: rgba(255,255,255,0.12);
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+      border: none;
+      border-radius: 15px;
+      padding: 1rem 2rem;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 0.3rem;
+    }
+
+    button[type="submit"]::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.5s;
+    }
+
+    button[type="submit"]:hover::before { left: 100%; }
+
+    button[type="submit"]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 38px rgba(99,102,241,0.55);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* OTP Step */
+    #otpSection {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .otp-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .otp-header h3 {
+      color: #fff;
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .otp-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+    }
+
+    .otp-header .email-sent-to {
+      color: #ec4899;
+      font-weight: 600;
+    }
+
+    /* OTP digit boxes */
+    .otp-boxes {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .otp-box {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 0;
+      caret-color: #ec4899;
+    }
+
+    .otp-box:focus {
+      border-color: #ec4899;
+      box-shadow: 0 0 20px rgba(236,72,153,0.4);
+    }
+
+    .resend-row {
+      text-align: center;
+      margin-top: 0.8rem;
+    }
+
+    .resend-btn {
+      background: none;
+      border: none;
+      color: #8b5cf6;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      width: auto;
+      box-shadow: none;
+      margin: 0;
+    }
+
+    .resend-btn:hover { color: #ec4899; transform: none; box-shadow: none; }
+    .resend-btn:disabled { color: rgba(255,255,255,0.3); cursor: not-allowed; text-decoration: none; }
+
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(30, 20, 60, 0.95);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 0.9rem 1.8rem;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      max-width: 340px;
+      text-align: center;
+    }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: rgba(99,102,241,0.5); }
+    #toast.error { border-color: rgba(236,72,153,0.5); }
+
+    @media (max-width: 480px) {
+      .container { margin: 1rem; padding: 2rem 1.2rem; }
+      h2 { font-size: 1.5rem; }
+      .otp-box { width: 40px; height: 50px; font-size: 1.2rem; }
     }
   </style>
 </head>
 
 <body>
   <div class="particles" id="particles"></div>
+
   <div class="container">
     <h2>🌌 Neon Portal</h2>
 
-    <!-- Step 1: Signup/Login Form -->
-    <form id="authForm">
-      <input type="text" name="username" placeholder="👤 Username" required>
-      <input type="email" name="email" placeholder="✉️ Email (blank for login)">
-      <input type="password" name="password" placeholder="🔒 Password" required>
-      <button type="submit">🚀 Submit</button>
-    </form>
+    <!-- STEP 1: Auth Form -->
+    <div id="authSection">
+      <div class="tab-row">
+        <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">🔑 Login</button>
+        <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">✨ Sign Up</button>
+      </div>
 
-    <!-- Step 2: OTP Verification -->
-    <div id="otpSection">
-      <h3>🔑 Verify OTP</h3>
-      <form id="otpForm">
-        <input type="text" name="otp" placeholder="Enter 6-digit code" required maxlength="6">
-        <button type="submit">✅ Verify & Enter</button>
+      <form id="authForm" class="form-group">
+        <input type="text" id="usernameInput" placeholder="👤 Username" required autocomplete="username">
+        <input type="email" id="emailInput" placeholder="✉️ Email" style="display:none" autocomplete="email">
+        <input type="password" id="passwordInput" placeholder="🔒 Password" required autocomplete="current-password">
+        <button type="submit" id="authSubmitBtn">🚀 Login</button>
       </form>
+    </div>
+
+    <!-- STEP 2: OTP Verification -->
+    <div id="otpSection">
+      <div class="otp-header">
+        <h3>🔑 Enter OTP</h3>
+        <p>Sent to <span class="email-sent-to" id="emailSentTo">your email</span></p>
+      </div>
+
+      <form id="otpForm">
+        <div class="otp-boxes">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        </div>
+        <button type="submit" id="verifyBtn">✅ Verify & Enter</button>
+      </form>
+
+      <div class="resend-row">
+        <button class="resend-btn" id="resendBtn" onclick="resendOTP()">Resend OTP</button>
+        <span id="resendTimer" style="color:rgba(255,255,255,0.4); font-size:0.85rem; display:none;"></span>
+      </div>
     </div>
   </div>
 
-  <script>
-    let currentUsername = "";
+  <div id="toast"></div>
 
-    // CSRF Token Helper
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
+  <script>
+    // ─── State ───────────────────────────────────────────────
+    let currentUsername = "";
+    let currentEmail = "";
+    let currentMode = "login"; // "login" | "signup"
+    let resendCooldown = null;
+
+    // ─── Tab switching ────────────────────────────────────────
+    function switchTab(mode) {
+      currentMode = mode;
+      const isSignup = mode === "signup";
+      document.getElementById("emailInput").style.display = isSignup ? "block" : "none";
+      document.getElementById("authSubmitBtn").textContent = isSignup ? "✨ Sign Up" : "🚀 Login";
+      document.getElementById("loginTab").classList.toggle("active", !isSignup);
+      document.getElementById("signupTab").classList.toggle("active", isSignup);
+      document.getElementById("passwordInput").autocomplete = isSignup ? "new-password" : "current-password";
     }
 
-    // AUTH FORM - FIXED WITH CSRF + ERROR HANDLING
+    // ─── CSRF helper ──────────────────────────────────────────
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    // ─── Toast ────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = "success") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = `show ${type}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = ""; }, 3500);
+    }
+
+    // ─── OTP box auto-advance ─────────────────────────────────
+    const otpBoxes = document.querySelectorAll(".otp-box");
+    otpBoxes.forEach((box, i) => {
+      box.addEventListener("input", () => {
+        // Only allow digits
+        box.value = box.value.replace(/\D/g, "");
+        if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+      });
+      box.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !box.value && i > 0) otpBoxes[i - 1].focus();
+      });
+      box.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+        pasted.split("").forEach((ch, idx) => {
+          if (otpBoxes[idx]) otpBoxes[idx].value = ch;
+        });
+        if (pasted.length > 0) otpBoxes[Math.min(pasted.length, 5)].focus();
+      });
+    });
+
+    function getOTPValue() {
+      return Array.from(otpBoxes).map(b => b.value).join("");
+    }
+
+    function clearOTPBoxes() {
+      otpBoxes.forEach(b => b.value = "");
+      otpBoxes[0].focus();
+    }
+
+    // ─── Auth form submit ─────────────────────────────────────
     document.getElementById("authForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const formData = Object.fromEntries(new FormData(e.target));
-      const endpoint = formData.email ? "/auth/signup/" : "/auth/login/";
+
+      const username = document.getElementById("usernameInput").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
+      const password = document.getElementById("passwordInput").value;
+
+      if (!username || !password) { showToast("Please fill in all fields", "error"); return; }
+      if (currentMode === "signup" && !email) { showToast("Email is required for signup", "error"); return; }
+
+      const btn = document.getElementById("authSubmitBtn");
+      btn.disabled = true;
+      btn.textContent = "⏳ Please wait...";
+
+      const endpoint = currentMode === "signup" ? "/auth/signup/" : "/auth/login/";
+      const payload = currentMode === "signup"
+        ? { username, email, password }
+        : { username, password };
 
       try {
         const response = await fetch(endpoint, {
           method: "POST",
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken")
           }
         });
 
-        // Handle HTML errors (500s)
         const contentType = response.headers.get("content-type");
-        let data;
-        if (contentType && contentType.includes("application/json")) {
-          data = await response.json();
-        } else {
-          data = { error: `Server error ${response.status}: ${response.statusText}` };
-        }
+        const data = contentType?.includes("application/json")
+          ? await response.json()
+          : { error: `Server error ${response.status}` };
 
         if (response.ok) {
-          currentUsername = formData.username;
+          currentUsername = username;
+          currentEmail = email || "(your registered email)";
+          document.getElementById("emailSentTo").textContent = currentEmail;
+          document.getElementById("authSection").style.display = "none";
           document.getElementById("otpSection").style.display = "block";
-          document.getElementById("authForm").style.display = "none";
+          clearOTPBoxes();
+          showToast("OTP sent! Check your inbox 📬", "success");
+          startResendCooldown(60);
         } else {
-          alert(data.message || data.error || "Unknown error");
+          showToast(data.error || data.message || "Something went wrong", "error");
         }
-      } catch (error) {
-        alert("Network error: " + error.message);
+      } catch (err) {
+        showToast("Network error: " + err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = currentMode === "signup" ? "✨ Sign Up" : "🚀 Login";
       }
     });
 
-    // OTP FORM - FIXED WITH CSRF
+    // ─── OTP form submit ──────────────────────────────────────
     document.getElementById("otpForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const otpValue = e.target.otp.value;
+
+      const otp = getOTPValue();
+      if (otp.length !== 6) { showToast("Enter all 6 digits", "error"); return; }
+
+      const btn = document.getElementById("verifyBtn");
+      btn.disabled = true;
+      btn.textContent = "⏳ Verifying...";
 
       try {
         const response = await fetch("/auth/verify-otp/", {
           method: "POST",
-          body: JSON.stringify({ username: currentUsername, otp: otpValue }),
+          body: JSON.stringify({ username: currentUsername, otp }),
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken")
@@ -303,40 +491,66 @@
         });
 
         const contentType = response.headers.get("content-type");
-        let data;
-        if (contentType && contentType.includes("application/json")) {
-          data = await response.json();
-        } else {
-          data = { error: `Server error ${response.status}` };
-        }
+        const data = contentType?.includes("application/json")
+          ? await response.json()
+          : { error: `Server error ${response.status}` };
 
         if (response.ok) {
           localStorage.setItem("access", data.access);
           localStorage.setItem("refresh", data.refresh);
-          alert("✅ Welcome to Neon Portal! 🚀");
-          window.location.href = "/auth/dashboard/";
+          showToast("✅ Welcome to Neon Portal! 🚀", "success");
+          setTimeout(() => { window.location.href = "/auth/dashboard/"; }, 1000);
         } else {
-          alert(data.error || "Invalid OTP");
-          e.target.otp.value = "";
-          e.target.otp.focus();
+          showToast(data.error || "Invalid OTP — try again", "error");
+          clearOTPBoxes();
         }
-      } catch (error) {
-        alert("Network error: " + error.message);
+      } catch (err) {
+        showToast("Network error: " + err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "✅ Verify & Enter";
       }
     });
 
-    // Particles animation (unchanged)
+    // ─── Resend OTP ───────────────────────────────────────────
+    async function resendOTP() {
+      const endpoint = currentMode === "signup" ? "/auth/signup/" : "/auth/login/";
+      // We can't resend without password — tell user to go back
+      showToast("Please go back and submit again to resend OTP", "error");
+    }
+
+    function startResendCooldown(seconds) {
+      const btn = document.getElementById("resendBtn");
+      const timer = document.getElementById("resendTimer");
+      btn.style.display = "none";
+      timer.style.display = "inline";
+      let remaining = seconds;
+
+      clearInterval(resendCooldown);
+      resendCooldown = setInterval(() => {
+        timer.textContent = `Resend in ${remaining}s`;
+        remaining--;
+        if (remaining < 0) {
+          clearInterval(resendCooldown);
+          timer.style.display = "none";
+          btn.style.display = "inline";
+        }
+      }, 1000);
+    }
+
+    // ─── Particles ────────────────────────────────────────────
     function createParticles() {
-      const particles = document.getElementById('particles');
+      const container = document.getElementById('particles');
       for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.width = particle.style.height = (Math.random() * 4 + 1) + 'px';
-        particle.style.animationDelay = Math.random() * 6 + 's';
-        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-        particles.appendChild(particle);
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = Math.random() * 100 + '%';
+        const size = (Math.random() * 4 + 1) + 'px';
+        p.style.width = p.style.height = size;
+        p.style.animationDelay = (Math.random() * 6) + 's';
+        p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        container.appendChild(p);
       }
     }
     createParticles();
