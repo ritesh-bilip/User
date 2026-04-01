@@ -12,7 +12,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$f*@#0fsa!n4m(+s*5jfz!4j(nro&w3=q)4_!-rz1be8$tlfu7'
 
 
-DEBUG = os.environ.get('DEBUG','False') == 'True'
+# DEBUG = os.environ.get('DEBUG','False') == 'True'
+DEBUG = True  # TEMP - 1 test only!
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
 
 ALLOWED_HOSTS = ['*']
 
