@@ -83,6 +83,7 @@ REST_FRAMEWORK = {
 # ✅ FIXED JWT
 JWT_SECRET = os.environ.get('JWT_SECRET', "aeaaf9ddccbe991a30006763f7276f90549e705f43bf272aa21fcfafaf145ff5")
 SIMPLE_JWT = {"SIGNING_KEY": JWT_SECRET}
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'riteshkrdas479@gmail.com')
