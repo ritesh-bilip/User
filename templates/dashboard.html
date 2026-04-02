@@ -535,7 +535,11 @@
 
     async function joinRoom(name) {
       const token = await getValidToken();
-      if (token) window.location.href = `http://127.0.0.1:8001/${name}/?token=${token}`;
+      if (token) {
+        // Use env-driven URL — set CHAT_SERVICE_URL in your auth service or hardcode your Render URL
+        const chatUrl = "https://chat-service-app-9xqu.onrender.com/"; // ← replace with your chat service URL
+        window.location.href = `${chatUrl}/${name}/?token=${token}`;
+      }
     }
 
     async function joinCustomRoom() {
