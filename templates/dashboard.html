@@ -6,238 +6,634 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Neon Hub</title>
   <style>
-    /* Your existing CSS + NEW ROOM SECTION */
-    .room-section {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 2rem;
-      margin: 2rem 0;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s ease;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .room-section:hover {
-      transform: translateY(-5px);
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a0033 50%, #2d1b69 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+      perspective: 1200px;
+      perspective-origin: center center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 600px;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .container:hover {
+      transform: rotateX(5deg) rotateY(5deg) translateZ(50px);
+    }
+
+    h1 {
+      color: #fff;
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+    }
+
+    #welcomeMsg {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    #welcomeMsg span {
+      color: #ec4899;
+      font-weight: 600;
+    }
+
+    .profile-card {
+      background: linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      transform-style: preserve-3d;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: transform;
       box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+    }
+
+    .profile-card:hover {
+      transform: rotateY(10deg) translateZ(40px) translateY(-10px);
+      box-shadow: 0 30px 60px rgba(99, 102, 241, 0.5), 0 0 30px rgba(236, 72, 153, 0.4);
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00f0ff, #ff00ff, #00ff88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.6);
+    }
+
+    .avatar:hover {
+      transform: rotateY(180deg) scale(1.1);
+      box-shadow: 0 20px 50px rgba(0, 240, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.5);
+    }
+
+    .profile-card p {
+      color: rgba(255, 255, 255, 0.75);
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+    }
+
+    .profile-card p strong {
+      color: #fff;
+    }
+
+    .room-section {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .room-section h3 {
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
     }
 
     .room-input-group {
       display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
     }
 
     .room-input {
       flex: 1;
       background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 15px;
-      padding: 1rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
       color: white;
-      font-size: 1.1rem;
-      backdrop-filter: blur(10px);
+      font-size: 0.95rem;
+      outline: none;
     }
 
     .room-input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(255, 255, 255, 0.45);
     }
 
     .room-input:focus {
-      outline: none;
       border-color: #6366f1;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-
-    .room-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-top: 1rem;
     }
 
     .room-item {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 240, 255, 0.1);
       border-radius: 12px;
-      padding: 1rem;
-      margin: 0.5rem 0;
+      padding: 0.9rem 1rem;
+      margin: 0.4rem 0;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid rgba(0, 240, 255, 0.3);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: #fff;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .room-item:hover {
-      background: rgba(99, 102, 241, 0.2);
-      transform: translateX(10px);
-      border-color: #6366f1;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(0, 240, 255, 0.3));
+      border-color: #00f0ff;
+      transform: rotateX(8deg) translateZ(25px) translateX(10px);
+      box-shadow: 0 15px 35px rgba(0, 240, 255, 0.4);
     }
 
-    .room-name {
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .room-join-btn {
-      background: linear-gradient(135deg, #10b981, #34d399);
+    .btn {
       border: none;
-      border-radius: 10px;
-      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
       color: white;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 0.6rem;
     }
 
-    .room-join-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899, #00f0ff);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35), 0 0 20px rgba(0, 240, 255, 0.3);
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+      will-change: transform;
     }
 
-    /* Your existing button styles remain */
+    .btn-primary:hover {
+      transform: translateZ(20px) rotateX(20deg) translateY(-5px);
+      box-shadow: 0 20px 45px rgba(99, 102, 241, 0.6), 0 0 40px rgba(0, 240, 255, 0.6);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, #10b981, #34d399, #00ff88);
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+      will-change: transform;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-green:hover {
+      transform: translateZ(18px) rotateX(15deg) translateY(-4px);
+      box-shadow: 0 18px 40px rgba(16, 185, 129, 0.6), 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, #ef4444, #f87171, #ff6b6b);
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+      will-change: transform;
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-red:hover {
+      transform: translateZ(18px) rotateX(15deg) translateY(-4px);
+      box-shadow: 0 18px 40px rgba(239, 68, 68, 0.6), 0 0 30px rgba(255, 107, 107, 0.5);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      padding: 0.5rem;
+    }
+
+    .btn-ghost:hover {
+      border-color: #ec4899;
+      color: #ec4899;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, rgba(26, 0, 51, 0.95), rgba(45, 27, 105, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 24px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      transform-style: preserve-3d;
+      animation: modal3dIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 0 50px rgba(0, 240, 255, 0.1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modal3dIn {
+      from {
+        opacity: 0;
+        transform: rotateX(-20deg) translateY(50px) translateZ(-100px) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: rotateX(0) translateY(0) translateZ(0) scale(1);
+      }
+    }
+
+    @keyframes float3d {
+
+      0%,
+      100% {
+        transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+      }
+
+      33% {
+        transform: translateZ(20px) rotateX(5deg) rotateY(-5deg);
+      }
+
+      66% {
+        transform: translateZ(10px) rotateX(-3deg) rotateY(8deg);
+      }
+    }
+
+    .profile-card,
+    .room-section,
+    .room-item {
+      animation: float3d 6s ease-in-out infinite;
+    }
+
+    .modal h3 {
+      color: #fff;
+      margin-bottom: 1.2rem;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .modal input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal input::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .modal input:focus {
+      border-color: #ec4899;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px) translateZ(-50px);
+      background: linear-gradient(135deg, rgba(20, 10, 40, 0.98), rgba(45, 27, 105, 0.9));
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: #fff;
+      padding: 0.8rem 1.6rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      z-index: 999;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      transform-style: preserve-3d;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0) translateZ(30px);
+      box-shadow: 0 30px 70px rgba(0, 240, 255, 0.3);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
   </style>
 </head>
 
 <body>
+
   <div class="container">
     <h1>✨ Dashboard</h1>
-    <div id="profile">Loading your profile...</div>
-    <h2 id="username">Welcome back!</h2>
+    <p id="welcomeMsg">Welcome back, <span id="usernameDisplay">...</span></p>
 
-    <!-- ✅ NEW ROOM SELECTION SECTION -->
-    <div class="room-section">
-      <h3>🎮 Join/Create Room</h3>
-      <div class="room-input-group">
-        <input type="text" id="roomInput" class="room-input" placeholder="Enter room name (e.g., gaming, coding, chill)"
-          maxlength="50">
-        <button onclick="joinCustomRoom()" class="room-join-btn">🚀 Join</button>
-      </div>
-
-      <div class="room-list" id="popularRooms">
-        <h4>Popular Rooms:</h4>
-        <div class="room-item" onclick="joinRoom('general')">
-          <span class="room-name">🌐 General</span>
-          <span class="room-join-btn">Join</span>
-        </div>
-        <div class="room-item" onclick="joinRoom('gaming')">
-          <span class="room-name">🎮 Gaming</span>
-          <span class="room-join-btn">Join</span>
-        </div>
-        <div class="room-item" onclick="joinRoom('coding')">
-          <span class="room-name">💻 Coding</span>
-          <span class="room-join-btn">Join</span>
-        </div>
-        <div class="room-item" onclick="joinRoom('music')">
-          <span class="room-name">🎵 Music Lounge</span>
-          <span class="room-join-btn">Join</span>
-        </div>
-      </div>
+    <div class="profile-card" id="profileCard">
+      <div class="avatar">👤</div>
+      <p id="bioText"><strong>Bio:</strong> Loading...</p>
+      <p id="joinedText"><strong>Joined:</strong> ...</p>
+      <p id="emailText" style="color:rgba(255,255,255,0.45); font-size:0.8rem;"></p>
     </div>
 
-    <button onclick="goToChat()">🎮 Quick Chat (General)</button>
-    <button onclick="logout()">🚪 Logout</button>
+    <div class="room-section">
+      <h3>🎮 Join or Create a Room</h3>
+      <div class="room-input-group">
+        <input type="text" id="roomInput" class="room-input" placeholder="Room name (e.g. coding, chill)"
+          maxlength="50">
+        <button class="btn btn-green" style="width:auto; margin:0; padding:0.75rem 1.2rem;"
+          onclick="joinCustomRoom()">🚀 Join</button>
+      </div>
+      <div class="room-item" onclick="joinRoom('general')"><span>🌐 General</span><span
+          style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Join →</span></div>
+      <div class="room-item" onclick="joinRoom('gaming')"><span>🎮 Gaming</span><span
+          style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Join →</span></div>
+      <div class="room-item" onclick="joinRoom('coding')"><span>💻 Coding</span><span
+          style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Join →</span></div>
+      <div class="room-item" onclick="joinRoom('music')"><span>🎵 Music Lounge</span><span
+          style="font-size:0.8rem;color:rgba(255,255,255,0.5);">Join →</span></div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="openForgotPassword()">🔑 Forgot / Change Password</button>
+    <button class="btn btn-red" onclick="logout()">🚪 Logout</button>
   </div>
 
+  <!-- Forgot Password Modal -->
+  <div class="modal-overlay" id="forgotModal">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" onclick="closeForgotModal()">✕</button>
+
+      <!-- Step 1: Enter email -->
+      <div class="step active" id="fpStep1">
+        <h3>🔑 Reset Password</h3>
+        <input type="email" id="fpEmail" placeholder="✉️ Your registered email">
+        <button class="btn btn-primary" onclick="sendResetOTP()">Send OTP</button>
+      </div>
+
+      <!-- Step 2: Enter OTP -->
+      <div class="step" id="fpStep2">
+        <h3>📬 Enter OTP</h3>
+        <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; text-align:center; margin-bottom:1rem;">Check your
+          inbox for the 6-digit code</p>
+        <input type="text" id="fpOTP" placeholder="6-digit OTP" maxlength="6" inputmode="numeric">
+        <button class="btn btn-primary" onclick="verifyResetOTP()">Verify OTP</button>
+      </div>
+
+      <!-- Step 3: New password -->
+      <div class="step" id="fpStep3">
+        <h3>🔒 New Password</h3>
+        <input type="password" id="fpNewPass" placeholder="New password (min 8 chars)">
+        <input type="password" id="fpConfirmPass" placeholder="Confirm new password">
+        <button class="btn btn-primary" onclick="submitNewPassword()">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
   <script>
+    let fpEmail = "";
+    let toastTimer;
+
+    function showToast(msg, duration = 3500) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove("show"), duration);
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
     async function getValidToken() {
       let token = localStorage.getItem("access");
-
-      // Check if token expired
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         if (payload.exp * 1000 < Date.now()) {
-          const refresh = localStorage.getItem("refresh");
-          const response = await fetch("/auth/refresh/", {
+          const res = await fetch("/auth/refresh/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh })
+            body: JSON.stringify({ refresh: localStorage.getItem("refresh") })
           });
-          const data = await response.json();
+          const data = await res.json();
           token = data.access;
           localStorage.setItem("access", token);
         }
       } catch (e) {
-        console.log("Token refresh failed, redirecting to login");
         window.location.href = "/auth/";
         return null;
       }
       return token;
     }
 
-    // ✅ NEW: Join custom room
-    async function joinCustomRoom() {
-      const roomName = document.getElementById('roomInput').value.trim();
-      if (!roomName) {
-        alert('Please enter a room name!');
-        return;
-      }
-
-      const token = await getValidToken();
-      if (token) {
-        window.location.href = `http://127.0.0.1:8001/${roomName}/?token=${token}`;
-      }
-    }
-
-    // ✅ NEW: Join predefined room
-    async function joinRoom(roomName) {
-      const token = await getValidToken();
-      if (token) {
-        window.location.href = `http://127.0.0.1:8001/${roomName}/?token=${token}`;
-      }
-    }
-
-    // ✅ Updated: Quick chat (general room)
-    async function goToChat() {
-      await joinRoom('general');
-    }
-
     async function loadProfile() {
-      const token = localStorage.getItem("access");
-      if (!token) {
-        alert("Session expired. Redirecting to login...");
-        window.location.href = "/auth/";
-        return;
-      }
+      const token = await getValidToken();
+      if (!token) return;
 
       try {
-        const response = await fetch("/auth/profile/", {
-          headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await response.json();
+        // Fetch both profile AND user detail in parallel
+        const [profileRes, userRes] = await Promise.all([
+          fetch("/auth/profile/", { headers: { "Authorization": "Bearer " + token } }),
+          fetch("/auth/user/", { headers: { "Authorization": "Bearer " + token } })
+        ]);
 
-        if (response.ok) {
-          document.getElementById("profile").innerHTML = `
-            ${data.avatar ? `<img src="${data.avatar}" alt="Avatar">` : '<div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#ec4899);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div>'}
-            <p><strong>🌟 Bio:</strong> ${data.bio || "Dreamer & Creator"}</p>
-            <p><strong>📅 Joined:</strong> ${new Date(data.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-          `;
-          document.getElementById("username").textContent = `Welcome, ${data.username || 'User'}!`;
+        const profile = await profileRes.json();
+        const user = await userRes.json();
+
+        if (profileRes.ok && userRes.ok) {
+          // ✅ Username from user endpoint (not profile)
+          document.getElementById("usernameDisplay").textContent = user.username;
+          document.getElementById("emailText").textContent = user.email;
+          document.getElementById("bioText").innerHTML = `<strong>🌟 Bio:</strong> ${profile.bio || "Dreamer & Creator"}`;
+          document.getElementById("joinedText").innerHTML = `<strong>📅 Joined:</strong> ${new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+          if (profile.avatar) {
+            document.querySelector(".avatar").innerHTML = `<img src="${profile.avatar}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+          } else {
+            // Show initials
+            const initials = user.username.slice(0, 2).toUpperCase();
+            document.querySelector(".avatar").textContent = initials;
+          }
         } else {
-          throw new Error('Invalid token');
+          throw new Error("Auth failed");
         }
-      } catch (error) {
-        alert("Session expired. Please login again.");
-        window.location.href = "/auth/";
+      } catch (e) {
+        showToast("Session expired. Redirecting...");
+        setTimeout(() => { window.location.href = "/auth/"; }, 1500);
       }
     }
+
+    async function joinRoom(name) {
+      const token = await getValidToken();
+      if (token) window.location.href = `http://127.0.0.1:8001/${name}/?token=${token}`;
+    }
+
+    async function joinCustomRoom() {
+      const name = document.getElementById("roomInput").value.trim();
+      if (!name) { showToast("⚠️ Enter a room name first"); return; }
+      await joinRoom(name);
+    }
+
+    document.getElementById("roomInput").addEventListener("keypress", e => {
+      if (e.key === "Enter") joinCustomRoom();
+    });
 
     function logout() {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      alert("Logged out safely! 👋");
-      window.location.href = "/auth/";
+      showToast("👋 Logged out safely!");
+      setTimeout(() => { window.location.href = "/auth/"; }, 1000);
     }
 
-    // Enter key support for room input
-    document.getElementById('roomInput').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        joinCustomRoom();
-      }
-    });
+    // ─── Forgot Password ──────────────────────────────────────
+    function openForgotModal() {
+      document.getElementById("forgotModal").classList.add("active");
+    }
+    // alias
+    function openForgotPassword() { openForgotModal(); }
 
-    window.addEventListener('load', loadProfile);
+    function closeForgotModal() {
+      document.getElementById("forgotModal").classList.remove("active");
+      // Reset to step 1
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      document.getElementById("fpStep1").classList.add("active");
+      document.getElementById("fpEmail").value = "";
+      document.getElementById("fpOTP").value = "";
+      document.getElementById("fpNewPass").value = "";
+      document.getElementById("fpConfirmPass").value = "";
+      fpEmail = "";
+    }
+
+    async function sendResetOTP() {
+      const email = document.getElementById("fpEmail").value.trim();
+      if (!email) { showToast("⚠️ Enter your email"); return; }
+
+      const res = await fetch("/auth/forgot-password/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      showToast("📬 " + data.message);
+      fpEmail = email;
+      // Always move to step 2 (don't reveal if email exists)
+      goToFpStep("fpStep2");
+    }
+
+    function verifyResetOTP() {
+      const otp = document.getElementById("fpOTP").value.trim();
+      if (otp.length !== 6) { showToast("⚠️ Enter the full 6-digit OTP"); return; }
+      // OTP verified on final submit — move to step 3
+      goToFpStep("fpStep3");
+    }
+
+    async function submitNewPassword() {
+      const newPass = document.getElementById("fpNewPass").value;
+      const confirmPass = document.getElementById("fpConfirmPass").value;
+      const otp = document.getElementById("fpOTP").value.trim();
+
+      if (newPass.length < 8) { showToast("⚠️ Password must be at least 8 characters"); return; }
+      if (newPass !== confirmPass) { showToast("⚠️ Passwords do not match"); return; }
+
+      const res = await fetch("/auth/reset-password/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+        body: JSON.stringify({ email: fpEmail, otp, new_password: newPass })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        showToast("✅ " + data.message);
+        closeForgotModal();
+        // Force re-login since password changed
+        setTimeout(() => {
+          localStorage.removeItem("access");
+          localStorage.removeItem("refresh");
+          window.location.href = "/auth/";
+        }, 1500);
+      } else {
+        showToast("❌ " + (data.error || "Something went wrong"));
+        goToFpStep("fpStep2"); // back to OTP step
+      }
+    }
+
+    function goToFpStep(stepId) {
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      document.getElementById(stepId).classList.add("active");
+    }
+
+    window.addEventListener("load", loadProfile);
   </script>
 </body>
 

@@ -12,6 +12,8 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import OTP, Profile
 from .serializer import UserSerializer, ProfileSerializer
+from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
 
 logger = logging.getLogger(__name__)
 
@@ -143,3 +145,48 @@ class DebugEmailView(APIView):
                 "api_key_set": bool(settings.EMAIL_HOST_PASSWORD),
                 "api_key_prefix": settings.EMAIL_HOST_PASSWORD[:10] if settings.EMAIL_HOST_PASSWORD else None
             }, status=400)
+        
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({
+            "username": request.user.username,
+            "email": request.user.email,
+        })
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Don't reveal if email exists
+            return Response({"message": "If that email exists, a reset code was sent."})
+        
+        code = str(random.randint(100000, 999999))
+        OTP.objects.create(user=user, code=code)
+        threading.Thread(
+            target=send_otp_email_async,
+            args=('Password Reset OTP', f'Your password reset OTP is {code}. It expires in 10 minutes.', user.email)
+        ).start()
+        return Response({"message": "If that email exists, a reset code was sent."})
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        code = request.data.get("otp")
+        new_password = request.data.get("new_password")
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        otp = OTP.objects.filter(user=user, code=code, is_verified=False).last()
+        if not otp:
+            return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        otp.is_verified = True
+        otp.save()
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password reset successful!"})
