@@ -15,19 +15,29 @@ from .models import OTP, Profile
 from .serializer import UserSerializer, ProfileSerializer
 from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
-
+from sendgrid.helpers.mail import Mail
+from sendgrid import SendGridAPIClient
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
+
 def send_otp_email_async(subject, message, recipient):
-    """Non-blocking email with error logging"""
-    try:
-        from django.conf import settings
-        from_email = settings.DEFAULT_FROM_EMAIL  # explicitly use verified sender
-        msg = EmailMessage(subject, message, from_email, [recipient])
-        msg.send(fail_silently=False)  # ← CHANGED: don't silence errors
-        logger.info(f"OTP email sent successfully to {recipient}")
-    except Exception as e:
-        logger.error(f"Failed to send OTP email to {recipient}: {str(e)}")
+    """Send email via SendGrid HTTP API — works on Render free tier"""
+    def _send():
+        try:
+            mail = Mail(
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to_emails=recipient,
+                subject=subject,
+                plain_text_content=message
+            )
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            response = sg.send(mail)
+            logger.info(f"OTP email sent to {recipient} — status {response.status_code}")
+        except Exception as e:
+            logger.error(f"Failed to send OTP email to {recipient}: {str(e)}")
+    
+    threading.Thread(target=_send).start()
 
 
 class SignupView(APIView):

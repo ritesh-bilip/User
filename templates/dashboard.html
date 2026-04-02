@@ -537,7 +537,7 @@
       const token = await getValidToken();
       if (token) {
         // Use env-driven URL — set CHAT_SERVICE_URL in your auth service or hardcode your Render URL
-        const chatUrl = "https://chat-service-app-9xqu.onrender.com/"; // ← replace with your chat service URL
+        const chatUrl = "https://chat-service-app-9xqu.onrender.com"; // ← replace with your chat service URL
         window.location.href = `${chatUrl}/${name}/?token=${token}`;
       }
     }

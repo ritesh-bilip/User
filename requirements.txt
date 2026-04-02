@@ -4,3 +4,4 @@ djangorestframework-simplejwt==5.3.1
 psycopg==3.2.1
 dj-database-url==2.2.0
 gunicorn==22.0.0
+sendgrid==6.11.0
