@@ -111,3 +111,35 @@ class ProfileView(APIView):
 def landing_page(request): return render(request, 'landing.html')
 def auth_page(request): return render(request, 'auth.html')
 def dashboard_page(request): return render(request, 'dashboard.html')
+class DebugEmailView(APIView):
+    def get(self, request):
+        from django.conf import settings
+        import threading
+        
+        # Test send synchronously (not async) to see the real error
+        try:
+            from django.core.mail import EmailMessage
+            msg = EmailMessage(
+                'Test OTP',
+                'This is a test OTP: 123456',
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.DEFAULT_FROM_EMAIL]  # send to yourself
+            )
+            msg.send(fail_silently=False)
+            return Response({
+                "status": "Email sent!",
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "host": settings.EMAIL_HOST,
+                "user": settings.EMAIL_HOST_USER,
+                "api_key_set": bool(settings.EMAIL_HOST_PASSWORD),
+                "api_key_prefix": settings.EMAIL_HOST_PASSWORD[:10] if settings.EMAIL_HOST_PASSWORD else None
+            })
+        except Exception as e:
+            return Response({
+                "error": str(e),
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "host": settings.EMAIL_HOST,
+                "user": settings.EMAIL_HOST_USER,
+                "api_key_set": bool(settings.EMAIL_HOST_PASSWORD),
+                "api_key_prefix": settings.EMAIL_HOST_PASSWORD[:10] if settings.EMAIL_HOST_PASSWORD else None
+            }, status=400)
