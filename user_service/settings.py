@@ -8,7 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ✅ FIXED: Use environment vars ONLY
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-$f*@#0fsa!n4m(+s*5jfz!4j(nro&w3=q)4_!-rz1be8$tlfu7')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'  # False in production
-ALLOWED_HOSTS = ['dasri-auth-service.onrender.com', '.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['dasri-auth-service.onrender.com', '.onrender.com', 'localhost', '127.0.0.1',
+                 '.vercel.app',
+    'localhost',
+    '127.0.0.1',]
 
 # Application definition
 INSTALLED_APPS = [
