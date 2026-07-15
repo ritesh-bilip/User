@@ -1,19 +1,15 @@
 from django.urls import path
-from .views import SignupView, LoginView, VerifyOTPView, ProfileView, landing_page, auth_page, dashboard_page,DebugEmailView,UserDetailView,ForgotPasswordView,ResetPasswordView
+from .views import *
 
 urlpatterns = [
-    # Template routes
-    path('', landing_page, name='landing'),
-    path('auth-page/', auth_page, name='auth_page'),
-    path('dashboard/', dashboard_page, name='dashboard'),
-    path('auth/debug-email/', DebugEmailView.as_view()),
-    path('auth/user/', UserDetailView.as_view()),
-    path('auth/forgot-password/', ForgotPasswordView.as_view()),
-    path('auth/reset-password/', ResetPasswordView.as_view()),
+    # Api routes
+    # path('', landing_page, name='landing'),
+    path('auth-page-register/', UserRegistrationView.as_view(), name='auth_page_register'),
+    path('auth-page-login/',UserLoginView.as_view(),name="auth_page_login"),
+    path('profile/',UserProfileView.as_view(),name='profile'),
 
-    # API routes
-    path('signup/', SignupView.as_view(), name='signup'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('verify-otp/', VerifyOTPView.as_view(), name='verify_otp'),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    # template
+    path('', landing_page, name='landing'),
+    path('auth-page/', auth_page, name='signup'),
+    path('dashboard/',dashboard_page,name='dashboard')
 ]
